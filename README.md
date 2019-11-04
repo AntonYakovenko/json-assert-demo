@@ -1,2 +1,2 @@
 # json-assert-demo
-JSONAssert library overview (https://github.com/skyscreamer/JSONassert)
+[JSONAssert](https://github.com/skyscreamer/JSONassert) library overview
