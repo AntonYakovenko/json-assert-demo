@@ -1,7 +1,9 @@
 package com.avid.jsonassert
 
 import org.skyscreamer.jsonassert.JSONAssert
+import org.skyscreamer.jsonassert.JSONCompare
 import org.skyscreamer.jsonassert.JSONCompareMode
+import org.skyscreamer.jsonassert.JSONCompareResult
 import spock.lang.Specification
 
 class CompareModeTest extends Specification {
@@ -43,6 +45,13 @@ class CompareModeTest extends Specification {
     def "STRICT mode assert demo"() {
         expect:
         JSONAssert.assertEquals(expectedJson, actualStrictJson, JSONCompareMode.STRICT)
+    }
+
+    def "STRICT mode detailed assert demo"() {
+        when:
+        JSONCompareResult result = JSONCompare.compareJSON(expectedJson, actualLenientJson, JSONCompareMode.STRICT)
+        expect:
+        result.passed()
     }
 
     def "STRICT_ORDER order mode assert demo"() {
