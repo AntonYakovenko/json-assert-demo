@@ -49,8 +49,8 @@ class CompareModeTest extends Specification {
 
     def "STRICT mode detailed assert demo"() {
         when:
-        JSONCompareResult result = JSONCompare.compareJSON(expectedJson, actualLenientJson, JSONCompareMode.STRICT)
-        expect:
+        JSONCompareResult result = JSONCompare.compareJSON(expectedJson, actualStrictJson, JSONCompareMode.STRICT)
+        then:
         result.passed()
     }
 

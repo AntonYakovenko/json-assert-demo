@@ -10,7 +10,7 @@ import spock.lang.Specification
 
 import static org.skyscreamer.jsonassert.Customization.customization
 
-class CustomComparatorTest extends Specification {
+class CustomComparatorSimpleTest extends Specification {
 
     // language=JSON
     private static final String expectedJson = """
@@ -24,52 +24,46 @@ class CustomComparatorTest extends Specification {
                     {
                       "code":  400,
                       "message":  "Bad Request",
-                      "details": "Validation failure"
-                    }"""
-    // language=JSON
-    private static final String expectedJsonTemplate = """
-                    {
-                      "code":  400,
-                      "message":  "Bad Request",
-                      "details": "_"
+                      "details": "Validation failure: missing required property"
                     }"""
 
-    def "anonymous value matcher example 1 error message demo"() {
+    def "anonymous value matcher example"() {
         given:
         JSONComparator cmp = new CustomComparator(JSONCompareMode.STRICT,
-                customization("details", new ValueMatcher<Object>() {
+                customization("details", new ValueMatcher<String>() {
                     @Override
-                    boolean equal(Object actual, Object expected) {
-                        actual == "I expect this details!"
+                    boolean equal(String actual, String expected) {
+                        actual.startsWith(expected)
                     }
                 }))
         expect:
-        JSONAssert.assertEquals(expectedJsonTemplate, actualJson, cmp)
+        JSONAssert.assertEquals(expectedJson, actualJson, cmp)
     }
 
-    def "anonymous value matcher example 2 error message demo"() {
+    def "closure value matcher example"() {
         given:
         JSONComparator cmp = new CustomComparator(JSONCompareMode.STRICT,
-                customization("details", { actual, expected -> actual == "I expect this details!" }))
+                customization("details", { String actual, String expected -> actual.startsWith(expected) }))
         expect:
-        JSONAssert.assertEquals(expectedJsonTemplate, actualJson, cmp)
+        JSONAssert.assertEquals(expectedJson, actualJson, cmp)
     }
 
-    def "regular expression value matcher error message demo"() {
+    def "regular expression value matcher example"() {
         given:
         JSONComparator cmp = new CustomComparator(JSONCompareMode.STRICT,
-                customization("details", new RegularExpressionValueMatcher("I expect this details!")))
+                customization("details", // language=regExp
+                        new RegularExpressionValueMatcher("Validation failure:.*")))
 
         expect:
-        JSONAssert.assertEquals(expectedJsonTemplate, actualJson, cmp)
+        JSONAssert.assertEquals(expectedJson, actualJson, cmp)
     }
 
-    def "constant value matcher error message demo"() {
+    def "ignore property value matcher example"() {
         given:
         JSONComparator cmp = new CustomComparator(JSONCompareMode.STRICT,
-                customization("details", new ConstantValueMatcher("I expect this details!")))
+                customization("details", { actual, expected -> true }))
 
         expect:
-        JSONAssert.assertEquals(expectedJsonTemplate, actualJson, cmp)
+        JSONAssert.assertEquals(expectedJson, actualJson, cmp)
     }
 }
