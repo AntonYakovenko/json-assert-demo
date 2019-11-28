@@ -14,43 +14,18 @@ import static org.skyscreamer.jsonassert.JSONCompare.compareJSON
 class PropertyAccessTest extends Specification {
 
     // language=JSON
-    String actual = '''{
-                "first": "actual", 
-                "second": 1
-            }'''
-    // language=JSON
     String expected = '''{
                 "first": "expected", 
                 "second": 1
-            }'''
-    // language=JSON
-    String deepActual = '''{
-                "outer": {
-                    "inner": {
-                        "value": "actual",
-                        "otherValue": "foo"
-                    }
-                }
             }'''
     // language=JSON
     String deepExpected = '''{
                 "outer": {
                     "inner": {
                         "value": "expected",
-                        "otherValue": "foo"
+                        "otherValue": "expected"
                     }
                 }
-            }'''
-    // language=JSON
-    String simpleWildcardActual = '''{
-              "foo": {
-                "bar1": {
-                  "baz": "actual"
-                },
-                "bar2": {
-                  "baz": "actual"
-                }
-              }
             }'''
     // language=JSON
     String simpleWildcardExpected = '''{
@@ -64,18 +39,6 @@ class PropertyAccessTest extends Specification {
               }
             }'''
     // language=JSON
-    String deepWildcardActual = '''{
-              "root": {
-                "baz": "actual",
-                "foo": {
-                  "baz": "actual",
-                  "bar": {
-                    "baz": "actual"
-                  }
-                }
-              }
-            }'''
-    // language=JSON
     String deepWildcardExpected = '''{
               "root": {
                 "baz": "expected",
@@ -83,19 +46,6 @@ class PropertyAccessTest extends Specification {
                   "baz": "expected",
                   "bar": {
                     "baz": "expected"
-                  }
-                }
-              }
-            }'''
-    // language=JSON
-    String rootDeepWildcardActual = '''{
-              "baz": "actual",
-              "root": {
-                "baz": "actual",
-                "foo": {
-                  "baz": "actual",
-                  "bar": {
-                    "baz": "actual"
                   }
                 }
               }
@@ -117,7 +67,7 @@ class PropertyAccessTest extends Specification {
     int comparatorCallCount = 0
     ValueMatcher<Object> comparator = { actual, expected ->
         comparatorCallCount++
-        return actual == "actual" && expected == "expected"
+        return actual == expected
     }
 
     def "when path matches in customization then call custom matcher"() {
@@ -125,7 +75,7 @@ class PropertyAccessTest extends Specification {
         JSONComparator jsonCmp = new CustomComparator(JSONCompareMode.STRICT,
                 customization("first", comparator))
         when:
-        JSONCompareResult result = compareJSON(expected, actual, jsonCmp)
+        JSONCompareResult result = compareJSON(expected, expected, jsonCmp)
         then:
         result.passed()
         and:
@@ -137,7 +87,7 @@ class PropertyAccessTest extends Specification {
         JSONComparator jsonCmp = new CustomComparator(JSONCompareMode.STRICT,
                 customization("outer.inner.value", comparator))
         when:
-        JSONCompareResult result = compareJSON(deepExpected, deepActual, jsonCmp)
+        JSONCompareResult result = compareJSON(deepExpected, deepExpected, jsonCmp)
         then:
         result.passed()
         and:
@@ -148,7 +98,7 @@ class PropertyAccessTest extends Specification {
         JSONComparator jsonCmp = new CustomComparator(JSONCompareMode.STRICT,
                 customization("foo.*.baz", comparator))
         when:
-        JSONCompareResult result = compareJSON(simpleWildcardExpected, simpleWildcardActual, jsonCmp)
+        JSONCompareResult result = compareJSON(simpleWildcardExpected, simpleWildcardExpected, jsonCmp)
         then:
         result.passed()
         and:
@@ -160,7 +110,7 @@ class PropertyAccessTest extends Specification {
         JSONComparator jsonCmp = new CustomComparator(JSONCompareMode.STRICT,
                 customization("root.**.baz", comparator))
         when:
-        JSONCompareResult result = compareJSON(deepWildcardExpected, deepWildcardActual, jsonCmp)
+        JSONCompareResult result = compareJSON(deepWildcardExpected, deepWildcardExpected, jsonCmp)
         then:
         result.passed()
         and:
@@ -172,7 +122,7 @@ class PropertyAccessTest extends Specification {
         JSONComparator jsonCmp = new CustomComparator(JSONCompareMode.STRICT,
                 customization("**.baz", comparator))
         when:
-        JSONCompareResult result = compareJSON(rootDeepWildcardExpected, rootDeepWildcardActual, jsonCmp)
+        JSONCompareResult result = compareJSON(rootDeepWildcardExpected, rootDeepWildcardExpected, jsonCmp)
         then:
         result.passed()
         and:

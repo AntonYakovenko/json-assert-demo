@@ -27,20 +27,15 @@ class CustomComparatorTemplateTest extends Specification {
                       "details": "Validation failure"
                     }"""
 
-    def "anonymous value matcher example 1 error message demo"() {
+    def "closure value matcher positive case"() {
         given:
         JSONComparator cmp = new CustomComparator(JSONCompareMode.STRICT,
-                customization("details", new ValueMatcher<Object>() {
-                    @Override
-                    boolean equal(Object actual, Object expected) {
-                        actual == "I expect this details!"
-                    }
-                }))
+                customization("details", { actual, expected -> actual == "Validation failure" }))
         expect:
         JSONAssert.assertEquals(expectedJsonTemplate, actualJson, cmp)
     }
 
-    def "anonymous value matcher example 2 error message demo"() {
+    def "closure value matcher error message demo"() {
         given:
         JSONComparator cmp = new CustomComparator(JSONCompareMode.STRICT,
                 customization("details", { actual, expected -> actual == "I expect this details!" }))
@@ -51,7 +46,8 @@ class CustomComparatorTemplateTest extends Specification {
     def "regular expression value matcher error message demo"() {
         given:
         JSONComparator cmp = new CustomComparator(JSONCompareMode.STRICT,
-                customization("details", new RegularExpressionValueMatcher("I expect this details!")))
+                customization("details", // language=RegExp
+                        new RegularExpressionValueMatcher("I expect this details!")))
 
         expect:
         JSONAssert.assertEquals(expectedJsonTemplate, actualJson, cmp)

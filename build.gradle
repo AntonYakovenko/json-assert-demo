@@ -10,7 +10,7 @@ repositories {
 }
 
 test {
-    exclude 'com/avid/jsonassert/CustomComparatorTest.class'
+    exclude 'com/avid/jsonassert/CustomComparatorTemplateTest.class'
 }
 
 dependencies {
@@ -21,3 +21,5 @@ dependencies {
     testImplementation 'org.spockframework:spock-core'
     testImplementation 'org.skyscreamer:jsonassert'
 }
+
+task full dependsOn clean, build

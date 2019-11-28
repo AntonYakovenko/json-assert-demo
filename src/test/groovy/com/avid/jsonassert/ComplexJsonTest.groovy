@@ -33,7 +33,7 @@ class ComplexJsonTest extends Specification {
     // language=JSON
     private static final String fieldUpdatedJson = '''
                     {
-                        "message": "Not Found",
+                        "message": "new-message",
                         "errors": [ "field1", "field2" ],
                         "details": {
                             "code": "aa-error"
@@ -52,7 +52,7 @@ class ComplexJsonTest extends Specification {
     private static final String arrayUpdatedJson = '''
                     {
                         "message": "Bad Request",
-                        "errors": [ "new_1", "new_2" ],
+                        "errors": [ "new-1", "new-2" ],
                         "details": {
                             "code": "aa-error"
                         }
@@ -79,9 +79,9 @@ class ComplexJsonTest extends Specification {
         where:
         actualJson             || expectedKey    | expectedValue
         fieldNullJson          || "message"      | JSONObject.NULL
-        fieldUpdatedJson       || "message"      | "Not Found"
+        fieldUpdatedJson       || "message"      | "new-message"
         arrayEmptyJson         || "errors"       | new JSONArray()
-        arrayUpdatedJson       || "errors"       | new JSONArray(["new_1", "new_2"])
+        arrayUpdatedJson       || "errors"       | new JSONArray(["new-1", "new-2"])
         nestedFieldUpdatedJson || "details.code" | "new-error"
     }
 }
